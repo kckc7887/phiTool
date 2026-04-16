@@ -127,8 +127,9 @@ def run(path, config, logger, metadata_dir="info", output_dirs=None):
             "music": "music"
         }
     
-    for dir_path in output_dirs.values():
-        os.makedirs(dir_path, exist_ok=True)
+    for key, dir_path in output_dirs.items():
+        if key in config and config[key]:
+            os.makedirs(dir_path, exist_ok=True)
     
     os.makedirs(metadata_dir, exist_ok=True)
     

@@ -62,16 +62,31 @@ class Logger:
         if not self.silent:
             sys.stderr.write(f"[DEBUG] {message}\n")
 
-def ensure_output_dirs():
+def ensure_output_dirs(config=None):
     os.makedirs(SAVE_DIR, exist_ok=True)
     os.makedirs(TEMP_DIR, exist_ok=True)
     os.makedirs(METADATA_DIR, exist_ok=True)
-    os.makedirs(AVATAR_DIR, exist_ok=True)
-    os.makedirs(CHART_DIR, exist_ok=True)
-    os.makedirs(ILLUSTRATION_DIR, exist_ok=True)
-    os.makedirs(ILLUSTRATION_BLUR_DIR, exist_ok=True)
-    os.makedirs(ILLUSTRATION_LOWRES_DIR, exist_ok=True)
-    os.makedirs(MUSIC_DIR, exist_ok=True)
+    
+    if config is None:
+        os.makedirs(AVATAR_DIR, exist_ok=True)
+        os.makedirs(CHART_DIR, exist_ok=True)
+        os.makedirs(ILLUSTRATION_DIR, exist_ok=True)
+        os.makedirs(ILLUSTRATION_BLUR_DIR, exist_ok=True)
+        os.makedirs(ILLUSTRATION_LOWRES_DIR, exist_ok=True)
+        os.makedirs(MUSIC_DIR, exist_ok=True)
+    else:
+        if config.get("avatar", True):
+            os.makedirs(AVATAR_DIR, exist_ok=True)
+        if config.get("chart", True):
+            os.makedirs(CHART_DIR, exist_ok=True)
+        if config.get("illustration", True):
+            os.makedirs(ILLUSTRATION_DIR, exist_ok=True)
+        if config.get("illustrationBlur", True):
+            os.makedirs(ILLUSTRATION_BLUR_DIR, exist_ok=True)
+        if config.get("illustrationLowRes", True):
+            os.makedirs(ILLUSTRATION_LOWRES_DIR, exist_ok=True)
+        if config.get("music", True):
+            os.makedirs(MUSIC_DIR, exist_ok=True)
 
 def find_apk():
     for pattern in DEFAULT_APK_PATHS:
@@ -155,7 +170,21 @@ def get_apk_path(apk_path, logger):
 def extract_metadata(apk_path, logger):
     from gameInformation import run
     from log import init_console_logger
-    ensure_output_dirs()
+    from configparser import ConfigParser
+    
+    c = ConfigParser()
+    c.read("config.ini", "utf8")
+    types = c["TYPES"]
+    config = {
+        "avatar": types.getboolean("avatar"),
+        "chart": types.getboolean("Chart"),
+        "illustrationBlur": types.getboolean("IllustrationBlur"),
+        "illustrationLowRes": types.getboolean("IllustrationLowRes"),
+        "illustration": types.getboolean("Illustration"),
+        "music": types.getboolean("music")
+    }
+    
+    ensure_output_dirs(config)
     internal_logger = init_console_logger()
     run(apk_path, internal_logger, METADATA_DIR)
 
@@ -164,7 +193,6 @@ def extract_resources(apk_path, logger):
     from log import init_console_logger
     from configparser import ConfigParser
     
-    ensure_output_dirs()
     internal_logger = init_console_logger()
     c = ConfigParser()
     c.read("config.ini", "utf8")
@@ -182,6 +210,8 @@ def extract_resources(apk_path, logger):
             "other_song": c["UPDATE"].getint("other_song")
         }
     }
+    
+    ensure_output_dirs(config)
     
     output_dirs = {
         "avatar": AVATAR_DIR,
@@ -402,9 +432,23 @@ def main():
         
         logger.info(f"使用APK: {apk_path}")
         
-        ensure_output_dirs()
         from gameInformation import run as game_info_run
         from log import init_console_logger
+        from configparser import ConfigParser
+        
+        c = ConfigParser()
+        c.read("config.ini", "utf8")
+        types = c["TYPES"]
+        config = {
+            "avatar": types.getboolean("avatar"),
+            "chart": types.getboolean("Chart"),
+            "illustrationBlur": types.getboolean("IllustrationBlur"),
+            "illustrationLowRes": types.getboolean("IllustrationLowRes"),
+            "illustration": types.getboolean("Illustration"),
+            "music": types.getboolean("music")
+        }
+        
+        ensure_output_dirs(config)
         internal_logger = init_console_logger()
         
         logger.info("提取元数据...")

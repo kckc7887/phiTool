@@ -8,7 +8,7 @@ def run_command(cmd):
 
 def check_summary():
     print('=== summary命令验证 ===')
-    stdout, stderr = run_command('python script-py/main.py summary 7xsuuwxj3i29ywt8hwdu3q9va')
+    stdout, stderr = run_command('python script-py/main.py summary <your_session_token>')
     try:
         data = json.loads(stdout)
         fields = list(data.keys())
@@ -30,7 +30,7 @@ def check_summary():
 def check_b27():
     print()
     print('=== b27命令验证 ===')
-    stdout, stderr = run_command('python script-py/main.py b27 7xsuuwxj3i29ywt8hwdu3q9va')
+    stdout, stderr = run_command('python script-py/main.py b27 <your_session_token>')
     try:
         data = json.loads(stdout)
         top_fields = list(data.keys())
@@ -53,7 +53,7 @@ def check_b27():
 def check_recommend():
     print()
     print('=== recommend命令验证 ===')
-    stdout, stderr = run_command('python script-py/main.py recommend 7xsuuwxj3i29ywt8hwdu3q9va --top 1')
+    stdout, stderr = run_command('python script-py/main.py recommend <your_session_token> --top 1')
     try:
         data = json.loads(stdout)
         top_fields = list(data.keys())
@@ -72,7 +72,7 @@ def check_recommend():
 def check_save():
     print()
     print('=== save命令验证 ===')
-    stdout, stderr = run_command('python script-py/main.py save 7xsuuwxj3i29ywt8hwdu3q9va')
+    stdout, stderr = run_command('python script-py/main.py save <your_session_token>')
     try:
         data = json.loads(stdout)
         fields = list(data.keys())
