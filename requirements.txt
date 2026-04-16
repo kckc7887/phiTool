@@ -1,0 +1,5 @@
+requests
+aiohttp
+pycryptodome
+unitypy
+qrcode

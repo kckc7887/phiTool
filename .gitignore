@@ -1,0 +1,41 @@
+# Python编译缓存
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# 输出目录
+output/
+phigros/
+
+# APK文件
+*.apk
+*.obb
+
+# 日志文件
+*.log
+
+# 临时文件
+*.tmp
+*.temp
+
+# 编辑器配置
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# 操作系统文件
+.DS_Store
+Thumbs.db
+
+# 配置文件（如有敏感信息）
+# config.ini
+
+# 存档文件
+*.json
+*.bin
+
+# 保留必要的JSON配置文件
+!typetree.json
+!config.ini
