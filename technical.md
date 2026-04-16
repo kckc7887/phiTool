@@ -343,8 +343,7 @@ phiTool/
 │   └── log.py             # 日志模块
 ├── difficulty.tsv         # 难度定数表
 ├── output/                # 输出目录（运行时创建）
-└── docs/                  # 技术文档
-    └── technical.md       # 详细技术文档
+└── technical.md           # 技术文档
 ```
 
 ## RKS计算公式
