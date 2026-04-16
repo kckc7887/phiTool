@@ -36,7 +36,7 @@ python script-py/main.py extract
 
 ## 技术文档
 
-详细使用说明请参考 `technical.md`
+- [详细使用说明请参考技术文档](./technical.md)
 
 ## 参考项目
 
