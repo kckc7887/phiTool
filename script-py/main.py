@@ -272,6 +272,18 @@ def get_summary(session_token):
     
     return asyncio.run(fetch_summary())
 
+def get_player_id(session_token):
+    from PhigrosLibrary import B19Class
+    import aiohttp
+    
+    async def fetch_player_id():
+        async with aiohttp.ClientSession() as client:
+            b19Class = B19Class(client)
+            player_id = await b19Class.get_playerId(session_token)
+            return player_id
+    
+    return asyncio.run(fetch_player_id())
+
 def get_b27(session_token):
     from PhigrosLibrary import B19Class
     import aiohttp
@@ -308,6 +320,9 @@ def main():
     
     summary_parser = subparsers.add_parser("summary", help="获取存档摘要")
     summary_parser.add_argument("session_token", help="Session Token")
+    
+    player_parser = subparsers.add_parser("player", help="获取玩家昵称")
+    player_parser.add_argument("session_token", help="Session Token")
     
     b27_parser = subparsers.add_parser("b27", help="计算B27分数")
     b27_parser.add_argument("session_token", help="Session Token")
@@ -380,6 +395,10 @@ def main():
     elif args.command == "summary":
         summary = get_summary(args.session_token)
         print(json.dumps(summary, ensure_ascii=False))
+    
+    elif args.command == "player":
+        player_id = get_player_id(args.session_token)
+        print(json.dumps({"player_id": player_id}, ensure_ascii=False))
     
     elif args.command == "b27":
         b27 = get_b27(args.session_token)

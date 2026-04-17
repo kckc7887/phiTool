@@ -9,6 +9,7 @@ phiTool 是一个用于管理 Phigros 游戏数据的命令行工具，集成了
 | 命令                  | 功能       | 说明                |
 | ------------------- | -------- | ----------------- |
 | `login`             | TapTap登录 | 获取Session Token   |
+| `player`            | 获取玩家昵称   | 获取TapTap玩家昵称      |
 | `summary`           | 存档摘要     | 获取存档基本信息          |
 | `save`              | 获取存档     | 获取并解密云存档          |
 | `b27`               | RKS计算    | 计算Best27和Phi3     |
@@ -43,7 +44,29 @@ python script-py/main.py login
 
 ***
 
-### 2. 获取存档摘要
+### 2. 获取玩家昵称
+
+```bash
+python script-py/main.py player <session_token>
+```
+
+**输出示例**:
+
+```json
+{
+  "player_id": "尘言"
+}
+```
+
+**字段说明**:
+
+| 字段          | 类型     | 说明         |
+| ----------- | ------ | ---------- |
+| `player_id` | string | TapTap玩家昵称 |
+
+***
+
+### 3. 获取存档摘要
 
 ```bash
 python script-py/main.py summary <session_token>
@@ -79,7 +102,7 @@ python script-py/main.py summary <session_token>
 
 ***
 
-### 3. 获取并解密云存档
+### 4. 获取并解密云存档
 
 ```bash
 python script-py/main.py save <session_token>
@@ -107,7 +130,7 @@ python script-py/main.py save <session_token>
 
 ***
 
-### 4. 获取TapTap下载链接
+### 5. 获取TapTap下载链接
 
 ```bash
 python script-py/main.py taptap
@@ -135,7 +158,7 @@ python script-py/main.py taptap
 
 ***
 
-### 5. 计算Best27/RKS
+### 6. 计算Best27/RKS
 
 ```bash
 python script-py/main.py b27 <session_token>
@@ -198,7 +221,7 @@ python script-py/main.py b27 <session_token>
 
 ***
 
-### 6. 推分推荐
+### 7. 推分推荐
 
 ```bash
 python script-py/main.py recommend <session_token> [--target 0.01] [--top 15]
@@ -265,7 +288,7 @@ python script-py/main.py recommend <session_token> [--target 0.01] [--top 15]
 
 ***
 
-### 7. 资源提取
+### 8. 资源提取
 
 ```bash
 python script-py/main.py extract [apk_path] [--metadata] [--resources]
@@ -295,7 +318,7 @@ python script-py/main.py extract [apk_path] [--metadata] [--resources]
 
 ***
 
-### 8. 更新难度定数表
+### 9. 更新难度定数表
 
 ```bash
 python script-py/main.py update-difficulty [apk_path]

@@ -7,6 +7,7 @@ phiTool 是一个用于管理 Phigros 游戏数据的命令行工具。
 | 命令          | 功能       | 说明              |
 | ----------- | -------- | --------------- |
 | `login`     | TapTap登录 | 获取Session Token |
+| `player`    | 获取玩家昵称 | 获取TapTap玩家昵称     |
 | `summary`   | 存档摘要    | 获取存档基本信息       |
 | `save`      | 获取存档     | 获取并解密云存档        |
 | `b27`       | RKS计算    | 计算Best27和Phi3   |
