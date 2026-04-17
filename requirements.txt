@@ -1,5 +1,5 @@
 requests
 aiohttp
 pycryptodome
-unitypy
+unitypy==1.10.18
 qrcode
