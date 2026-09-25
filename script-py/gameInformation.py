@@ -25,65 +25,30 @@ import logging
 
 DEBUG = False
 
-# GameInformation 的字段布局随游戏版本变化，类型树定义必须与 APK 匹配：
-# typetree.json 对应 3.19.x，typetree.4.0.0.json 对应 4.0.0 及以后。
-# 按顺序尝试，取第一个能完整读出对象的定义。
-TYPETREE_FILES = ("typetree.json", "typetree.4.0.0.json")
-
-
-def load_typetrees(files=TYPETREE_FILES):
-    typetrees = []
-    for name in files:
-        if not os.path.isfile(name):
-            continue
-        with open(name, encoding="utf8") as f:
-            typetrees.append((name, json.load(f)))
-    if not typetrees:
-        raise FileNotFoundError("缺少类型树定义文件：%s" % "、".join(files))
-    return typetrees
-
-
-def read_objects(env, typetree):
-    """按给定类型树读取元数据对象，布局不匹配时抛异常。"""
+def run(path, logger, output_dir="info"):
+    Tips = None
     GameInformation = None
     Collections = None
-    Tips = None
-    for obj in env.objects:
-        if obj.type.name != "MonoBehaviour":
-            continue
-        data = obj.read()
-        script_name = data.m_Script.get_obj().read().name
-        if script_name == "GameInformation":
-            GameInformation = obj.read_typetree(typetree["GameInformation"])
-        elif script_name == "GetCollectionControl":
-            Collections = obj.read_typetree(typetree["GetCollectionControl"], True)
-        elif script_name == "TipsProvider":
-            Tips = obj.read_typetree(typetree["TipsProvider"], True)
-    if GameInformation is None:
-        raise ValueError("APK 中没有 GameInformation 对象")
-    return GameInformation, Collections, Tips
-
-
-def run(path, logger, output_dir="info"):
     os.makedirs(output_dir, exist_ok=True)
+    # typetree.json 对应 Phigros 4.0.0 及以后的 GameInformation 布局
+    with open("typetree.json") as f:
+        typetree = json.load(f)
     env = Environment()
     with zipfile.ZipFile(path) as apk:
         with apk.open("assets/bin/Data/globalgamemanagers.assets") as f:
             env.load_file(BytesIO(f.read()), name="assets/bin/Data/globalgamemanagers.assets")
         with apk.open("assets/bin/Data/level0") as f:
             env.load_file(BytesIO(f.read()))
-
-    failures = []
-    for name, typetree in load_typetrees():
-        try:
-            GameInformation, Collections, Tips = read_objects(env, typetree)
-        except Exception as error:
-            failures.append("%s：%s" % (name, error))
+    for obj in env.objects:
+        if obj.type.name != "MonoBehaviour":
             continue
-        logger.info("使用类型树 %s" % name)
-        break
-    else:
-        raise RuntimeError("没有匹配该 APK 的类型树定义：\n%s" % "\n".join(failures))
+        data = obj.read()
+        if data.m_Script.get_obj().read().name == "GameInformation":
+            GameInformation = obj.read_typetree(typetree["GameInformation"])
+        elif data.m_Script.get_obj().read().name == "GetCollectionControl":
+            Collections = obj.read_typetree(typetree["GetCollectionControl"], True)
+        elif data.m_Script.get_obj().read().name == "TipsProvider":
+            Tips = obj.read_typetree(typetree["TipsProvider"], True)
 
     difficulty = []
     table = []
