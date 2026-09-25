@@ -302,6 +302,8 @@ python script-py/main.py extract [apk_path] [--metadata] [--resources]
 | `--metadata`   | 仅提取元数据（难度定数表等）      |
 | `--resources`  | 仅提取媒体资源（头像、曲绘）      |
 
+**类型树选择**：`GameInformation` 的字段布局随游戏版本变化（4.0.0 起新增 `hiddenChallengeSongItem` 与 5 个挑战模式字段），元数据提取会依次尝试 `typetree.json`、`typetree.4.0.0.json`，使用第一个能完整读出对象的定义，并在日志中记录所用文件。新版本布局变化时，按同样方式在该目录新增类型树定义并登记到 `gameInformation.py` 的 `TYPETREE_FILES`。
+
 **输出示例**:
 
 ```json
@@ -362,7 +364,8 @@ phiTool/
 │   ├── resource.py        # Unity资源提取核心模块
 │   ├── gameInformation.py # 元数据提取模块
 │   ├── config.ini         # 资源提取配置文件
-│   ├── typetree.json      # Unity类型树定义
+│   ├── typetree.json      # Unity类型树定义（3.19.x）
+│   ├── typetree.4.0.0.json # Unity类型树定义（4.0.0及以后）
 │   └── log.py             # 日志模块
 ├── difficulty.tsv         # 难度定数表
 ├── output/                # 输出目录（运行时创建）
