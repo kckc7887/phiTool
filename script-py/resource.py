@@ -116,6 +116,18 @@ def save(key, entry, pool, logger, output_dirs, config):
         # save_music(f"music/{key}.wav", obj)
 
 
+def resolve_bundle_path(available, entry):
+    """定位 APK 内的 bundle 文件。
+
+    catalog 里的名字在 4.0.0 起带上了 <group>_ 前缀，而 APK 内只有 <hash>.bundle。
+    """
+    name = str(entry)
+    path = "assets/aa/Android/%s" % name
+    if path not in available:
+        path = "assets/aa/Android/%s" % name.rsplit("_", 1)[-1]
+    return path
+
+
 def run(path, config, logger, metadata_dir="info", output_dirs=None):
     if output_dirs is None:
         output_dirs = {
@@ -201,9 +213,10 @@ def run(path, config, logger, metadata_dir="info", output_dirs=None):
     with ThreadPoolExecutor(6) as pool:
         if update["main_story"] == 0 and update["other_song"] == 0 and update["side_story"] == 0:
             with ZipFile(path) as apk:
+                available = set(apk.namelist())
                 for key, entry in table:
                     env = Environment()
-                    env.load_file(BytesIO(apk.read("assets/aa/Android/%s" % entry)), name=key)
+                    env.load_file(BytesIO(apk.read(resolve_bundle_path(available, entry))), name=key)
                     for i_key, i_entry in env.files.items():
                         save(i_key, i_entry, pool, logger, output_dirs, config)
         else:
@@ -221,13 +234,14 @@ def run(path, config, logger, metadata_dir="info", output_dirs=None):
             logger.info(str(l))
             env = Environment()
             with ZipFile(path) as apk:
+                available = set(apk.namelist())
                 for key, entry in table:
                     if key[:7] == "avatar.":
-                        env.load_file(BytesIO(apk.read("assets/aa/Android/%s" % entry)), name=key)
+                        env.load_file(BytesIO(apk.read(resolve_bundle_path(available, entry))), name=key)
                         continue
                     for song_id in l:
                         if key.startswith("%s.0/" % song_id):
-                            env.load_file(BytesIO(apk.read("assets/aa/Android/%s" % entry)), name=key)
+                            env.load_file(BytesIO(apk.read(resolve_bundle_path(available, entry))), name=key)
                             break
             for i_key, i_entry in env.files.items():
                 save(i_key, i_entry, pool, logger, output_dirs, config)
